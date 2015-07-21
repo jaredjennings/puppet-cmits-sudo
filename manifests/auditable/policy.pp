@@ -129,6 +129,9 @@ class sudo::auditable::policy {
         type => 'exec',
         commands => [
             '/sbin/dracut',
+# \verb!fsck! is not a script, but it may run a more specific binary, so it
+# needs to be able to exec.
+            '/sbin/fsck',
             '/sbin/grub-install',
             '/sbin/grub-md5-crypt',
             '/sbin/grub-terminfo',
