@@ -45,6 +45,6 @@ inherits sudo::params {
         }
 # We deal with Snow Leopard in \verb!sudo::policy_file!.
         'Darwin': {}
-        default: { unimplemented() }
+        default: { fail "unimplemented on ${::osfamily}" }
     }
 }

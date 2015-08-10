@@ -50,7 +50,7 @@ define sudo::include_policy_file($ensure='present', $sudoers='', $sudoers_d='') 
                             ],
                     }
                 }
-                default: { unimplemented() }
+                default: { fail "unimplemented on ${::osfamily}" }
             }
         }
         default: {
@@ -68,7 +68,7 @@ define sudo::include_policy_file($ensure='present', $sudoers='', $sudoers_d='') 
                             #include[.='${d_sudoers_d}/${name}'] size == 0",
                     }
                 }
-                default: { unimplemented() }
+                default: { fail "unimplemented on ${::osfamily}" }
             }
         }
     }
