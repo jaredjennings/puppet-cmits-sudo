@@ -34,7 +34,7 @@ define sudo::policy_file($content='', $ensure='present', $sudoers='', $sudoers_d
 
     file { "${d_sudoers_d}/${name}":
         ensure => $ensure,
-        owner => root, group => 0, mode => 0440,
+        owner => root, group => 0, mode => '0440',
         content => $content,
     }
 

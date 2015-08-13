@@ -25,7 +25,7 @@ class sudo::auditable::whole(
     datacat { "sudoers.d/90auditable_whole":
         path => "${sudoers_d}/90auditable_whole",
         template => "${module_name}/auditable/whole.erb",
-        owner => root, group => 0, mode => 0440,
+        owner => root, group => 0, mode => '0440',
     } ->
     sudo::include_policy_file { "90auditable_whole":
         sudoers => $sudoers,

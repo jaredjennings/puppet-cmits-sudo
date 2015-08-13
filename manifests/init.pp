@@ -28,7 +28,7 @@ inherits sudo::params {
 # in its own file. We place these files in the \verb!$sudoers_d!.
     file { $sudoers_d:
         ensure => directory,
-        owner => root, group => 0, mode => 0750,
+        owner => root, group => 0, mode => '0750',
     }
 
     case $::osfamily {
