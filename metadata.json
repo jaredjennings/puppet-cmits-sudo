@@ -7,6 +7,8 @@
   "source": "https://github.com/jaredjennings/puppet-cmits-sudo",
   "project_page": "https://github.com/jaredjennings/puppet-cmits-sudo",
   "issues_url": "https://github.com/jaredjennings/puppet-cmits-sudo/issues",
-  "dependencies": []
+  "dependencies": [
+    { "name": "richardc/datacat", "version_requirement": ">=0.6.0" },
+  ]
 }
 

@@ -1,0 +1,7 @@
+fixtures:
+  symlinks:
+    sudo: "#{source_dir}"
+  repositories:
+    datacat:
+      repo: "https://github.com/richardc/puppet-datacat.git"
+      ref: 0.6.2

@@ -14,12 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'rspec-puppet'
+require 'puppetlabs_spec_helper/puppet_spec_helper'
 
 fixture_path = File.expand_path(File.join(__FILE__, '..', 'fixtures'))
 
 RSpec.configure do |c|
-  c.module_path = File.join(fixture_path, 'modules')
-  c.manifest_dir = File.join(fixture_path, 'manifests')
+   c.module_path = File.join(fixture_path, 'modules')
+   c.manifest_dir = File.join(fixture_path, 'manifests')
 end
 
 shared_context "with tmpdir", :with_tmpdir => true do

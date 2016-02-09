@@ -1,0 +1,3 @@
+group :rake do
+  gem 'test-unit', '>=3'
+end
