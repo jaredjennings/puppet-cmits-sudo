@@ -1,12 +1,14 @@
 language: ruby
 script:
   - "rake validate spec test"
-gemfile: .gemfile
 matrix:
   include:
     - rvm: 1.9.3
+      gemfile: .gemfile
       env: PUPPET_VERSION="~> 2.7.0"
     - rvm: 1.9.3
+      gemfile: .gemfile
       env: PUPPET_VERSION="~> 3.7.0"
     - rvm: 2.2.1
+      gemfile: .gemfile
       env: PUPPET_VERSION="~> 4.2.0"
