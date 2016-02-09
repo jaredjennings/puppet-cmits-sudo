@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 1.9.3
+script:
+  - "rake validate spec test"
+env:
+  - PUPPET_VERSION="~> 2.7.0"
+  - PUPPET_VERSION="~> 3.7.0"
+gemfile: .gemfile

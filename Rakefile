@@ -23,7 +23,7 @@ end
 
 # http://stackoverflow.com/questions/9017158/
 
-task :default => [:test, :spec]
+task :default => [:validate, :test, :spec]
 
 Rake::TestTask.new do |t|
     t.test_files = FileList['test/test*.rb']

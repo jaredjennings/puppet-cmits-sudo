@@ -1,3 +1,9 @@
-group :rake do
-  gem 'test-unit', '>=3'
-end
+source 'https://rubygems.org'
+
+puppetversion = ENV["PUPPET_VERSION"]
+gem 'puppet', puppetversion, :require => false
+gem 'puppet-lint'
+gem 'rspec-puppet'
+gem 'puppetlabs_spec_helper', '>= 1.0.1'
+gem 'test-unit', '>= 3'
+gem 'rake', '>= 10'
