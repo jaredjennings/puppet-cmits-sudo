@@ -72,11 +72,25 @@ Cmnd_Alias BAD_STUFF = \\
     end
   end
 
-  describe "on a Mac" do
-    let(:facts) {{ :osfamily => 'Darwin' }}
+  describe "on a Snow Leopard Mac" do
+    # note: on a Mac the operatingsystemrelease is the Darwin version
+    # not the Mac OS X version
+    let(:facts) {{ :osfamily => 'Darwin',
+                   :operatingsystemrelease => '10.8' }}
     include_examples "proper sudoers.d file creation"
     it "should add include statements to the sudoers file" do
       should create_augeas('sudoers_include_90auditable_whole')
+    end
+  end
+
+  describe "on an El Capitan Mac" do
+    # note: on a Mac the operatingsystemrelease is the Darwin version
+    # not the Mac OS X version
+    let(:facts) {{ :osfamily => 'Darwin',
+                   :operatingsystemrelease => '15.0.0' }}
+    include_examples "proper sudoers.d file creation"
+    it "should not add include statements to the sudoers file" do
+      should((not create_augeas('sudoers_include_90auditable_whole')))
     end
   end
 

@@ -36,40 +36,73 @@ define sudo::include_policy_file($ensure='present', $sudoers='', $sudoers_d='') 
         default => $sudoers_d,
     }
 
-    case $ensure {
+# sudo supported the #includedir directive as of 1.7.2. But some
+# versions of Mac OS X had older sudo than that. It's safe to
+# avoid the use of #includedir, but if it's possible to use, it's
+# easier to read and maintain.
+#
+# It would be more robust to ask sudo what version it is on this box
+# than to research when each operating system got sudo 1.7.2---but the
+# output of sudo -V seems to be more complicated than a single number
+# in some cases.
+    $can_includedir = $osfamily ? {
+      'RedHat' => true, # since RHEL5
+      'CentOS' => true, # since CentOS 5
+      'Fedora' => $operatingsystemrelease ? {
+        # Fedora 13 had sudo 1.7.2
+        /^1[3-9]/ => true,
+        /^[2-9][0-9]/ => true,
+        default => false,
+      },
+      'Debian' => $operatingsystemrelease ? {
+        # squeeze had 1.7.4
+        /^[6789]/ => true,
+        default => false,
+      },
+      'Ubuntu' => $operatingsystemrelease ? {
+        # precise had 1.8.3
+        /^1[2-9]\..*/ => true,
+        default => false,
+      },
+      'Darwin' => $operatingsystemrelease ? {
+        # https://en.wikipedia.org/wiki/Darwin_%28operating_system%29#Release_history
+        /^15\..*/ => true, # El Capitan has sudo 1.7.10
+
+        # I think Mavericks (13.x) still had an old sudo; don't know
+        # about Yosemite (14.x). If you know or can test---patches
+        # gratefully accepted. File an issue, send a PR. Until then,
+        # all these fall under the default case below.
+
+        /^10\..*/ => false, # Snow Leopard is why all this code got written
+        default   => false,
+      },
+      default  => false,
+    }
+
+    Augeas {
+      context => "/files/${d_sudoers}",
+      incl => "${d_sudoers}",
+      lens => 'Sudoers.lns',
+    }
+
+    if ! $can_includedir {
+      case $ensure {
         'absent': {
-            case $osfamily {
-                'RedHat': {}
-                'Darwin': {
-                    augeas { "sudoers_exclude_${name}":
-                        context => "/files/${d_sudoers}",
-                        incl => "${d_sudoers}",
-                        lens => 'Sudoers.lns',
-                        changes => [
-                            "rm #include[.='${d_sudoers_d}/${name}']",
-                            ],
-                    }
-                }
-                default: { fail "unimplemented on ${::osfamily}" }
-            }
+          augeas { "sudoers_exclude_${name}":
+            changes => [
+                        "rm #include[.='${d_sudoers_d}/${name}']",
+                        ],
+          }
         }
         default: {
-            case $osfamily {
-                'RedHat': {}
-                'Darwin': {
-                    augeas { "sudoers_include_${name}":
-                        context => "/files/${d_sudoers}",
-                        incl => "${d_sudoers}",
-                        lens => 'Sudoers.lns',
-                        changes => [
-                            "set #include[last()+1] '${d_sudoers_d}/${name}'",
-                            ],
-                        onlyif => "match \
-                            #include[.='${d_sudoers_d}/${name}'] size == 0",
-                    }
-                }
-                default: { fail "unimplemented on ${::osfamily}" }
-            }
+          augeas { "sudoers_include_${name}":
+            changes => [
+                        "set #include[last()+1] '${d_sudoers_d}/${name}'",
+                        ],
+            onlyif => "match \
+            #include[.='${d_sudoers_d}/${name}'] size == 0",
+          }
         }
+      }
     }
 }
