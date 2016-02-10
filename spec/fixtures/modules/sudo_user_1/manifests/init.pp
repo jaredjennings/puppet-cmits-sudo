@@ -30,4 +30,5 @@ class sudo_user_1 {
         enable => false,
     }
     sudo::auditable::for { '%luckygroup': }
+    sudo::auditable::for { '%exadmins': ensure => absent }
 }

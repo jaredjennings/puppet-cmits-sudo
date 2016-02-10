@@ -70,6 +70,10 @@ Cmnd_Alias BAD_STUFF = \\
     NOPASSWD:SETENV:EXEC:   AUDITABLE_SETENV_EXEC
 ")
     end
+
+    it "should disallow the exadmins from running things" do
+      should create_file("#{sudoers_d}/99_exadmins").with_ensure('absent')
+    end
   end
 
   describe "on a Snow Leopard Mac" do
@@ -99,7 +103,6 @@ Cmnd_Alias BAD_STUFF = \\
     include_examples "proper sudoers.d file creation"
   end
 
-  
   # I guess we don't get to test the actual contents of the files
   # here: if we wanted to, we would have to write an acceptance spec
   # using Beaker, which would spin up a VM or container, run the

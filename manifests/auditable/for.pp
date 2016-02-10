@@ -14,8 +14,9 @@
 # % See the License for the specific language governing permissions and
 # % limitations under the License.
 define sudo::auditable::for(
-    $run_as='ALL',
-    $no_password=true,
+  $run_as='ALL',
+  $no_password=true,
+  $ensure='present',
 ) {
     $user_spec = $name
     $modifiers = $no_password ? {
@@ -25,8 +26,12 @@ define sudo::auditable::for(
     $safe_userspec =     regsubst($user_spec, '[^a-zA-Z_]', '_')
     require sudo::auditable::whole
     sudo::policy_file { "99${safe_userspec}":
-        ensure => present,
+        ensure => $ensure,
         content => template("${module_name}/auditable/rule.erb"),
     }
-    sudo::remove_direct_sudoers_policy { "${name}": }
+    # only remove other policy about this user/group if we are putting
+    # something in place to replace it
+    if $ensure == 'present' {
+      sudo::remove_direct_sudoers_policy { "${name}": }
+    }
 }

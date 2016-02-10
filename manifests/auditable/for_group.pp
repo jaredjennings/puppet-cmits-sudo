@@ -14,8 +14,9 @@
 # % See the License for the specific language governing permissions and
 # % limitations under the License.
 define sudo::auditable::for_group(
-    $run_as='ALL',
-    $no_password=true,
+  $run_as='ALL',
+  $no_password=true,
+  $ensure='present',
 ) {
     sudo::auditable::for { "%${name}":
         run_as => $run_as,
@@ -24,7 +25,7 @@ define sudo::auditable::for_group(
 # Remove the file that the older version of this policy put in place,
 # if it's there.
     sudo::policy_file { "${name}":
-        ensure => absent,
+        ensure => $ensure,
     }
 }
 
