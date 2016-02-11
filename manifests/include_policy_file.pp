@@ -67,12 +67,9 @@ define sudo::include_policy_file($ensure='present', $sudoers='', $sudoers_d='') 
       'Darwin' => $operatingsystemrelease ? {
         # https://en.wikipedia.org/wiki/Darwin_%28operating_system%29#Release_history
         /^15\..*/ => true, # El Capitan has sudo 1.7.10
-
-        # I think Mavericks (13.x) still had an old sudo; don't know
-        # about Yosemite (14.x). If you know or can test---patches
-        # gratefully accepted. File an issue, send a PR. Until then,
-        # all these fall under the default case below.
-
+        /^14\..*/ => true,
+        /^13\..*/ => true, # Mavericks has sudo 1.7.10
+        # Lion and Mountain Lion unknown
         /^10\..*/ => false, # Snow Leopard is why all this code got written
         default   => false,
       },
