@@ -31,20 +31,13 @@ inherits sudo::params {
         owner => root, group => 0, mode => '0750',
     }
 
-    case $::osfamily {
-# RHEL5 and RHEL6 both have sudo newer than 1.7.1, which is when the
-# \verb!#includedir! directive was added. In these cases we can just
-# \verb!#includedir! our \verb!sudoers.d! directory.
-        'RedHat': {
-            augeas { 'consult_sudoers_d':
-                context => "/files${sudoers}",
-                incl => $sudoers,
-                lens => "Sudoers.lns",
-                changes => "set '#includedir' '${sudoers_d}'",
-            }
-        }
-# We deal with Snow Leopard in \verb!sudo::policy_file!.
-        'Darwin': {}
-        default: { fail "unimplemented on ${::osfamily}" }
+    if $::sudo_can_includedir == true {
+      augeas { 'consult_sudoers_d':
+        context => "/files${sudoers}",
+        incl => $sudoers,
+        lens => "Sudoers.lns",
+        changes => "set '#includedir' '${sudoers_d}'",
+      }
     }
+# We deal with what happens if this is false elsewhere.
 }
