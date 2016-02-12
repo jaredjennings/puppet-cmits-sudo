@@ -37,13 +37,25 @@ describe 'sudo::allow_group' do
     end
   end
 
-  context 'on a Darwin box' do
+  context 'on a Snow Leopard box' do
     include_context 'on any host'
     let(:facts) {{
-        :osfamily => 'Darwin',
+                   :osfamily => 'Darwin',
+                   :sudo_can_includedir => false,
       }}
     it do
       should contain_augeas('sudoers_include_99_fungroup')
+    end
+  end
+
+  context 'on a Mavericks box' do
+    include_context 'on any host'
+    let(:facts) {{
+                   :osfamily => 'Darwin',
+                   :sudo_can_includedir => true,
+      }}
+    it do
+      should (not contain_augeas('sudoers_include_99_fungroup'))
     end
   end
 end
