@@ -80,7 +80,8 @@ Cmnd_Alias BAD_STUFF = \\
     # note: on a Mac the operatingsystemrelease is the Darwin version
     # not the Mac OS X version
     let(:facts) {{ :osfamily => 'Darwin',
-                   :operatingsystemrelease => '10.8' }}
+                   :operatingsystemrelease => '10.8',
+                   :sudo_can_includedir => false }}
     include_examples "proper sudoers.d file creation"
     it "should add include statements to the sudoers file" do
       should create_augeas('sudoers_include_90auditable_whole')
@@ -91,7 +92,8 @@ Cmnd_Alias BAD_STUFF = \\
     # note: on a Mac the operatingsystemrelease is the Darwin version
     # not the Mac OS X version
     let(:facts) {{ :osfamily => 'Darwin',
-                   :operatingsystemrelease => '15.0.0' }}
+                   :operatingsystemrelease => '15.0.0',
+                   :sudo_can_includedir => true }}
     include_examples "proper sudoers.d file creation"
     it "should not add include statements to the sudoers file" do
       should((not create_augeas('sudoers_include_90auditable_whole')))

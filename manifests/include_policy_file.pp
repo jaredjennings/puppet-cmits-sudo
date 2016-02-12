@@ -36,53 +36,13 @@ define sudo::include_policy_file($ensure='present', $sudoers='', $sudoers_d='') 
         default => $sudoers_d,
     }
 
-# sudo supported the #includedir directive as of 1.7.2. But some
-# versions of Mac OS X had older sudo than that. It's safe to
-# avoid the use of #includedir, but if it's possible to use, it's
-# easier to read and maintain.
-#
-# It would be more robust to ask sudo what version it is on this box
-# than to research when each operating system got sudo 1.7.2---but the
-# output of sudo -V seems to be more complicated than a single number
-# in some cases.
-    $can_includedir = $osfamily ? {
-      'RedHat' => true, # since RHEL5
-      'CentOS' => true, # since CentOS 5
-      'Fedora' => $operatingsystemrelease ? {
-        # Fedora 13 had sudo 1.7.2
-        /^1[3-9]/ => true,
-        /^[2-9][0-9]/ => true,
-        default => false,
-      },
-      'Debian' => $operatingsystemrelease ? {
-        # squeeze had 1.7.4
-        /^[6789]/ => true,
-        default => false,
-      },
-      'Ubuntu' => $operatingsystemrelease ? {
-        # precise had 1.8.3
-        /^1[2-9]\..*/ => true,
-        default => false,
-      },
-      'Darwin' => $operatingsystemrelease ? {
-        # https://en.wikipedia.org/wiki/Darwin_%28operating_system%29#Release_history
-        /^15\..*/ => true, # El Capitan has sudo 1.7.10
-        /^14\..*/ => true,
-        /^13\..*/ => true, # Mavericks has sudo 1.7.10
-        # Lion and Mountain Lion unknown
-        /^10\..*/ => false, # Snow Leopard is why all this code got written
-        default   => false,
-      },
-      default  => false,
-    }
-
     Augeas {
       context => "/files/${d_sudoers}",
       incl => "${d_sudoers}",
       lens => 'Sudoers.lns',
     }
 
-    if ! $can_includedir {
+    if $::sudo_can_includedir == false {
       case $ensure {
         'absent': {
           augeas { "sudoers_exclude_${name}":
