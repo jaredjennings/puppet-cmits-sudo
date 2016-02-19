@@ -14,12 +14,30 @@
 # % See the License for the specific language governing permissions and
 # % limitations under the License.
 class sudo(
-    $sudoers=$sudo::params::sudoers,
-    $sudoers_d=$sudo::params::sudoers_d)
-inherits sudo::params {
+  $sudoers=$sudo::params::sudoers,
+  $sudoers_d=$sudo::params::sudoers_d,
+  $users_to_all=$sudo::params::users_to_all,
+  $groups_to_all=$sudo::params::groups_to_all,
+  $require_password=$sudo::params::require_password,
+) inherits sudo::params {
 
   class { 'sudo::config':
     sudoers   => $sudoers,
     sudoers_d => $sudoers_d,
+  }
+
+  require sudo::auditable::policy
+
+  $no_password = $require_password ? {
+    true => false,
+    false => true,
+  }
+  sudo::auditable::for { $users_to_all:
+    no_password => $no_password,
+    require => Class['sudo::config'],
+  }
+  sudo::auditable::for_group { $groups_to_all:
+    no_password => $no_password,
+    require => Class['sudo::config'],
   }
 }

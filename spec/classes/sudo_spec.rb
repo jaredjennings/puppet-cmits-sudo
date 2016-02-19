@@ -16,15 +16,10 @@
 require 'tmpdir'
 require 'spec_helper'
 
-describe 'sudo_user_1', :with_tmpdir => true do
+describe 'sudo', :with_tmpdir => true do
   let(:sudoers_d) { '/etc/sudoers.d' }
 
   shared_examples_for "proper sudoers.d file creation" do
-    it "should not include sudo" do
-      should (not contain_class('sudo::auditable::policy'))
-      should (not contain_class('sudo'))
-    end
-    
     it "should define the EDITORS Cmnd_Alias" do
       should create_file("#{sudoers_d}/30EDITORS").with_content("
 Cmnd_Alias EDITORS = \\
@@ -66,9 +61,9 @@ Cmnd_Alias BAD_STUFF = \\
       should create_datacat('sudoers.d/90auditable_whole').with_template('sudo/auditable/whole.erb')
     end
 
-    it "should allow the luckygroup to run things" do
-      should create_file("#{sudoers_d}/99_luckygroup").with_content(
-"%luckygroup ALL=(ALL) \\
+    it "should allow the wheel group to run things" do
+      should create_file("#{sudoers_d}/99_wheel").with_content(
+"%wheel ALL=(ALL) \\
     NOPASSWD:NOEXEC:        AUDITABLE_NOEXEC, \\
     NOPASSWD:EXEC:          AUDITABLE_EXEC,   \\
     NOPASSWD:SETENV:NOEXEC: AUDITABLE_SETENV_NOEXEC, \\
@@ -76,9 +71,6 @@ Cmnd_Alias BAD_STUFF = \\
 ")
     end
 
-    it "should disallow the exadmins from running things" do
-      should create_file("#{sudoers_d}/99_exadmins").with_ensure('absent')
-    end
   end
 
   describe "on a Snow Leopard Mac" do

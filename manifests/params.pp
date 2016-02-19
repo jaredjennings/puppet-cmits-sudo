@@ -14,6 +14,9 @@
 # % See the License for the specific language governing permissions and
 # % limitations under the License.
 class sudo::params(
-    $sudoers='/etc/sudoers',
-    $sudoers_d='/etc/sudoers.d',
+  $sudoers='/etc/sudoers',
+  $sudoers_d='/etc/sudoers.d',
+  $users_to_all=[],
+  $groups_to_all=['wheel'],
+  $require_password=false,
     ) {}
