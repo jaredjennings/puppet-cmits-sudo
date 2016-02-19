@@ -13,13 +13,25 @@
 # % WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # % See the License for the specific language governing permissions and
 # % limitations under the License.
-class sudo(
+class sudo::config(
     $sudoers=$sudo::params::sudoers,
     $sudoers_d=$sudo::params::sudoers_d)
 inherits sudo::params {
 
-  class { 'sudo::config':
-    sudoers   => $sudoers,
-    sudoers_d => $sudoers_d,
-  }
+# As much as possible, we are writing each piece of sudo configuration
+# in its own file. We place these files in the \verb!$sudoers_d!.
+    file { $sudoers_d:
+        ensure => directory,
+        owner => root, group => 0, mode => '0750',
+    }
+
+    if $::sudo_can_includedir == true {
+      augeas { 'consult_sudoers_d':
+        context => "/files${sudoers}",
+        incl => $sudoers,
+        lens => "Sudoers.lns",
+        changes => "set '#includedir' '${sudoers_d}'",
+      }
+    }
+# We deal with what happens if this is false elsewhere.
 }
