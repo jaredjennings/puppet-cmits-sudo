@@ -19,10 +19,11 @@
 
 This module helps you make `sudo` more auditable, by compelling admins
 to use it to run single commands, rather than a whole root shell. This
-involves a great deal more detail regarding the commands admins can
-run; this module helps you deal with that granularity.
+involves going into some detail regarding the commands admins can run;
+this module helps you deal with that granularity.
 
-It's made for Red Hat, and will work on CentOS and Fedora.
+It's made for Red Hat, CentOS, Fedora and Mac OS X. It'll probably
+work elsewhere too. 
 
 
 ## Module Description
@@ -52,8 +53,8 @@ system and need to execute other programs. And it contains a way for
 you to specify programs and scripts that should be executable using
 `sudo`.
 
-This module doesn't contain a lot of portability, doesn't manage the
-installation of `sudo`, and doesn't overwrite the `sudo`
+This module doesn't contain a lot of explicit portability, doesn't
+manage the installation of `sudo`, and doesn't overwrite the `sudo`
 configuration.
 
 
@@ -68,7 +69,9 @@ configuration.
 
 ### Setup Requirements **OPTIONAL**
 
-You must have `sudo` installed and pluginsync enabled.
+You must have `sudo` version 1.6.9 or later installed; Augeas,
+ruby-augeas and a suitable `sudoers` lens (should come with Augeas);
+and pluginsync enabled.
 
 
 ### Beginning with sudo
